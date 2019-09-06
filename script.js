@@ -38,11 +38,11 @@ function workers(m) {
 // let count = 10;
 let Time = 10;
 let lyamda = 2;
-let a = 1;
-let b = 2;
+let a = 3;
+let b = 5;
 let wait_time = 2;
 
-let worker_count = 2;
+let worker_count = 6;
 
 // let worker_1 = workers();
 // let worker_2 = workers();
@@ -55,122 +55,60 @@ console.log(hajaxord);
 
 let worker = workers(worker_count);
 
-worker.forEach(function(val, index, array) {
-	console.log(val.t_i + "____" + index);
-})
-
-
-
-
-for (var i = 0; i < hajaxord.length; i++) {
-	worker.forEach(function(work, index) {
-		console.log(work.finish_time + "   finish_time" + index + "__"+ i +"__" + hajaxord[i].t_i);
-		if(hajaxord[i].t_i > work.finish_time && work.free === false) {
-		console.log(hajaxord[i].t_i + " azat 1  "+ i +" ___" + work.finish_time);
-		work.free = true;
-	}
-
-
+for (let i = 0; i < hajaxord.length; i++) {
+	let serve_true_false = false;
 	if(hajaxord[i].t_i + hajaxord[i].serve <= Time){
 
-		if(work.free === true ){
+		for (let j = 0; j < worker.length; j++) {
 
-			work.free = false;
-			work.t_i = hajaxord[i].t_i;
-			work.finish_time = work.t_i + hajaxord[i].serve;
+			if(hajaxord[i].t_i >= worker[j].finish_time && worker[j].free === false){
+				worker[j].free = true;
+			}
 
+			if(worker[j].free === true){
 
-			N_serviced++;
-			return true;
-			console.log(i,"work");
+				worker[j].free = false;
+				worker[j].t_i = hajaxord[i].t_i;
+				worker[j].finish_time = worker[j].t_i + hajaxord[i].serve;
+				serve_true_false = true;
+				// console.log(i,j,worker[j].t_i,worker[j].finish_time);
+				console.log("spasarkel = " + j,"hajaxord = " + i,"jamanaky = " + worker[j].t_i, "verj = " + worker[j].finish_time);
+				break;
 
-		}  else {
-			if (hajaxord[i].wait_time + hajaxord[i].t_i >= work.finish_time && 
-				work.finish_time + hajaxord[i].serve <= Time){
-
-				work.free = false;
-			work.t_i = work.finish_time;
-			work.finish_time = work.t_i + hajaxord[i].serve;
-			N_serviced++;
-			return true;
-			console.log(i,"work++++");
-		}  else {
-			N_serviced_No++;
-
+			} 
 		}
-	} 
 
 
-} else {
-	N_serviced_No++;
-}
-});
-}
 
-
-/*
-
-for (var i = 0; i < hajaxord.length; i++) {
-
-	if(hajaxord[i].t_i > worker_1.finish_time && worker_1.free === false) {
-		// console.log(hajaxord[i].t_i + " azat 1  "+ i +" ___" + worker_1.finish_time);
-		worker_1.free = true;
-	}
-	if(hajaxord[i].t_i > worker_2.finish_time && worker_2.free === false) {
-		// console.log(hajaxord[i].t_i + " azat 2  "+ i +" ___" + worker_2.finish_time);
-		worker_2.free = true;
-	}
-
-
-	if(hajaxord[i].t_i + hajaxord[i].serve <= Time){
-
-		if(worker_1.free === true ){
-
-			worker_1.free = false;
-			worker_1.t_i = hajaxord[i].t_i;
-			worker_1.finish_time = worker_1.t_i + hajaxord[i].serve;
-
-
+		if (serve_true_false) {
 			N_serviced++;
-			console.log(i,"worker_1");
-
-		} else if(worker_2.free === true){
-
-			worker_2.free = false;
-			worker_2.t_i = hajaxord[i].t_i;
-			worker_2.finish_time = worker_2.t_i + hajaxord[i].serve;
-
-			N_serviced++;
-			console.log(i,"worker_2");
-
 		} else {
-			if (hajaxord[i].wait_time + hajaxord[i].t_i >= worker_1.finish_time && 
-				worker_1.finish_time + hajaxord[i].serve <= Time){
+			for (let j = 0; j < worker.length; j++) {
+			if(worker[j].free === false && hajaxord[i].t_i + hajaxord[i].wait_time >= worker[j].finish_time &&
+						hajaxord[i].t_i + worker[j].finish_time + hajaxord[i].serve <= Time
+					){
 
-				worker_1.free = false;
-			worker_1.t_i = worker_1.finish_time;
-			worker_1.finish_time = worker_1.t_i + hajaxord[i].serve;
-			N_serviced++;
-			console.log(i,"worker_1++++");
-		} else if (hajaxord[i].wait_time + hajaxord[i].t_i >= worker_2.finish_time && 
-			worker_2.finish_time + hajaxord[i].serve <= Time){
+				worker[j].free = false;
+				worker[j].t_i = worker[j].finish_time;
+				worker[j].finish_time = worker[j].t_i + hajaxord[i].serve;
+				serve_true_false = true;
+				// console.log(i,j,worker[j].t_i,worker[j].finish_time);
+				console.log("spasarkel = " + j,"hajaxord = " + i,"jamanaky = " + worker[j].t_i, "verj = " + worker[j].finish_time, "spasel = " + (worker[j].t_i - hajaxord[i].t_i));
 
-			worker_2.free = false;
-			worker_2.t_i = worker_2.finish_time;
-			worker_2.finish_time = worker_2.t_i + hajaxord[i].serve;
+				break;
+			
+			}
+		}
+		if (serve_true_false) {
 			N_serviced++;
-			console.log(i,"worker_2++++");
 		} else {
 			N_serviced_No++;
-
 		}
-	} 
+		}
 
-
-
-
-} else {
-	N_serviced_No++;
+	} else {
+		N_serviced_No++;
+	}
 }
-}*/
+
 console.log(N_serviced,N_serviced_No);
